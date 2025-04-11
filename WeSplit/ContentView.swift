@@ -12,6 +12,8 @@ struct ContentView: View {
     @State private var checkAmount = 0.0
     @State private var numberOfPeople = 0
     @State private var tipPercentage = 20
+    @State private var isPreviewOn: Bool = false
+    
     @FocusState private var amountIsFocused: Bool
         
     var splitAmount: Double {
@@ -83,6 +85,21 @@ struct ContentView: View {
                         }
                         .listRowBackground(Color.mint)
                     }
+                    
+                    HStack {
+                        Button("Show My Share") {
+                            isPreviewOn.toggle()
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .background(Color.clear)
+                    .listRowBackground(Color.clear)
+
                 }
                 .scrollContentBackground(.hidden)
             }
@@ -94,6 +111,32 @@ struct ContentView: View {
                     }
                 }
             }
+            .sheet(isPresented: $isPreviewOn) {
+                MyShareView(isPreviewOn: $isPreviewOn, myCheckAmount: .constant(splitAmount))
+                    .presentationDetents([.medium])
+            }
+        }
+    }
+}
+
+struct MyShareView: View {
+    @Binding var isPreviewOn: Bool
+    @Binding var myCheckAmount: Double
+    
+    var body: some View {
+        Spacer()
+        Text("Your Share: \(myCheckAmount)")
+        Spacer()
+        Button("Dismiss"){
+            isPreviewOn.toggle()
+        }
+        
+        .onAppear(){
+            print("Appeared")
+        }
+        
+        .onDisappear(){
+            print("Disappeared")
         }
     }
 }
